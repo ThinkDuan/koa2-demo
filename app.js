@@ -1,9 +1,13 @@
 const Koa = require("koa");
-const Router = require("koa-router"); // 路由解析
-const BodyParser = require("koa-bodyparser");
+const bodyParser = require("koa-bodyparser");
 const app = new Koa();
-const router = new Router();
-const bodyParser = new BodyParser();
+
+const controllers = require("./controllers.js");
+app.use(bodyParser());
+app.use(controllers());
+app.listen(3000);
+
+
 // 异步函数通过await next()来调用下一个中间件
 // app.use(async (ctx, next) => {
 //   console.log(`${ctx.request.method} ${ctx.request.url} 1231`); // 打印URL
@@ -22,19 +26,3 @@ const bodyParser = new BodyParser();
 //   ctx.response.type = 'text/html';
 //   ctx.response.body = '<h1>Hello, koa2!</h1>';
 // });
-const main = async(ctx,next) => {
-  await next();
-  ctx.response.body = "Hello World";
-};
-const about = async(ctx,next) => {
-  await next();
-  let name = ctx.params.name;
-  ctx.response.body = "About" + `${name}`;
-}
-router.get("/",main);
-router.get("/about",about);
-router.get("/about/:name",about);
-
-
-app.use(router.routes());
-app.listen(3000);
